@@ -24,7 +24,7 @@ Agent Harnesses run with broad filesystem and shell privileges on local machines
 
 ### Option 1: One-Command Install via `npx` (Recommended)
 
-Install the universal skill directly without manual cloning or building (works with GitHub repo access today and seamlessly once open-sourced):
+Install the universal skill directly without manual cloning or building:
 
 ```bash
 npx skills add HIUEETR/Sibyl
@@ -32,7 +32,7 @@ npx skills add HIUEETR/Sibyl
 
 After installation, type `/sibyl` in your target project conversation to have the model inspect your active harness and initialize hooks and rules automatically.
 
-You can also run the standalone CLI directly via `npx` (requires Git access to the repository if private):
+You can also run the standalone CLI directly via `npx` to initialize a project:
 
 ```bash
 npx github:HIUEETR/Sibyl init --target all --scope workspace --with-mcp

@@ -1,9 +1,6 @@
 ---
 name: sibyl
-description: >-
-  ONLY invoke when the user explicitly triggers /sibyl. Do NOT auto-activate during normal tasks.
-  Guides the agent to initialize Sibyl safe-deletion hooks, rules, and trash guard in the current
-  workspace, and provides trash inspection, recovery, and cleanup commands when explicitly requested.
+description: Manual-only command (/sibyl) to initialize Sibyl safe-deletion hooks or manage .sibyl-trash. Never invoke automatically.
 disable-model-invocation: true
 user-invocable: true
 ---
