@@ -2,7 +2,7 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 
-export type TrashMode = "workspace-first" | "global" | "custom";
+export type TrashMode = "workspace" | "global" | "custom";
 export type PurgePolicy = "autonomous" | "ask" | "deny";
 export type GitDestructivePolicy = "deny" | "ask" | "allow";
 export type SelfProtectPolicy = "deny" | "ask";
@@ -21,7 +21,7 @@ export interface SibylConfig {
 }
 
 export const DEFAULT_CONFIG: SibylConfig = {
-  trashMode: "workspace-first",
+  trashMode: "workspace",
   workspaceTrashDirName: ".sibyl-trash",
   maxBytes: 1024 * 1024 * 1024, // 1 GiB
   watermarkRatio: 0.5, // 50%
@@ -32,7 +32,7 @@ export const DEFAULT_CONFIG: SibylConfig = {
   selfProtectPolicy: "deny",
 };
 
-const TRASH_MODES: ReadonlySet<string> = new Set(["workspace-first", "global", "custom"]);
+const TRASH_MODES: ReadonlySet<string> = new Set(["workspace", "workspace-first", "global", "custom"]);
 const PURGE_POLICIES: ReadonlySet<string> = new Set(["autonomous", "ask", "deny"]);
 const GIT_POLICIES: ReadonlySet<string> = new Set(["deny", "ask", "allow"]);
 const SELF_PROTECT_POLICIES: ReadonlySet<string> = new Set(["deny", "ask"]);
@@ -91,7 +91,7 @@ function mergeConfigLayer(base: SibylConfig, layer?: Record<string, unknown>): S
   const next: SibylConfig = { ...base, allowDirectDeletePatterns: [...base.allowDirectDeletePatterns] };
 
   if (typeof layer.trashMode === "string" && TRASH_MODES.has(layer.trashMode)) {
-    next.trashMode = layer.trashMode as TrashMode;
+    next.trashMode = (layer.trashMode === "workspace-first" ? "workspace" : layer.trashMode) as TrashMode;
   }
   if (typeof layer.customTrashDir === "string" && layer.customTrashDir.trim().length > 0) {
     next.customTrashDir = layer.customTrashDir.trim();

@@ -115,7 +115,7 @@ describe("trash lifecycle, symlink safety, and purge guardrails", () => {
     expect(fs.readFileSync(targetFile, "utf8")).toBe("keep-me-intact");
   });
 
-  it("routes out-of-workspace files to global SIBYL_HOME trash", async () => {
+  it("routes out-of-workspace files to workspace trash by default and supports global override", async () => {
     const outsideFile = path.join(tmpRoot, "outside.txt");
     fs.writeFileSync(outsideFile, "outside-content", "utf8");
 
@@ -126,12 +126,29 @@ describe("trash lifecycle, symlink safety, and purge guardrails", () => {
       config,
     });
 
-    expect(res.moved[0].trashRoot).toBe(path.join(sibylHome, "trash"));
+    expect(res.moved[0].trashRoot).toBe(path.join(workspaceRoot, ".sibyl-trash"));
     expect(fs.existsSync(outsideFile)).toBe(false);
 
-    const listed = listItems({ scope: "global", workspaceRoot, config });
+    const listed = listItems({ scope: "workspace", workspaceRoot, config });
     expect(listed).toHaveLength(1);
     expect(listed[0].originalPath).toBe(outsideFile);
+
+    const restored = await restoreItem(res.moved[0].id, {
+      cwd: workspaceRoot,
+      workspaceRoot,
+      config,
+    });
+    expect(restored.restoredTo).toBe(outsideFile);
+    expect(fs.readFileSync(outsideFile, "utf8")).toBe("outside-content");
+
+    const globalConfig: SibylConfig = { ...config, trashMode: "global" };
+    const globalRes = await trashPaths([outsideFile], {
+      cwd: workspaceRoot,
+      workspaceRoot,
+      config: globalConfig,
+    });
+    expect(globalRes.moved[0].trashRoot).toBe(path.join(sibylHome, "trash"));
+    expect(fs.existsSync(outsideFile)).toBe(false);
   });
 
   it("enforces quota + 24h cooldown + FIFO 50% watermark on autonomous purge", async () => {

@@ -84,7 +84,7 @@ export function getWorkspaceTrashRoot(workspaceRoot: string, config: SibylConfig
 }
 
 export function resolveTrashRoot(
-  targetPath: string,
+  _targetPath: string,
   workspaceRoot: string,
   config: SibylConfig
 ): string {
@@ -94,10 +94,7 @@ export function resolveTrashRoot(
   if (config.trashMode === "custom" && config.customTrashDir) {
     return path.resolve(expandHome(config.customTrashDir));
   }
-  if (isPathInside(targetPath, workspaceRoot)) {
-    return getWorkspaceTrashRoot(workspaceRoot, config);
-  }
-  return getGlobalTrashRoot();
+  return getWorkspaceTrashRoot(workspaceRoot, config);
 }
 
 export function getCandidateTrashRoots(workspaceRoot: string, config: SibylConfig): string[] {
@@ -111,7 +108,7 @@ export function getCandidateTrashRoots(workspaceRoot: string, config: SibylConfi
     }
   };
 
-  if (config.trashMode === "workspace-first") {
+  if (config.trashMode === "workspace") {
     add(getWorkspaceTrashRoot(workspaceRoot, config));
     add(getGlobalTrashRoot());
   } else if (config.trashMode === "custom" && config.customTrashDir) {

@@ -2,13 +2,33 @@
   "name": "sibyl",
   "version": "0.1.0",
   "description": "Universal Skill + Hook + single-file CLI/MCP safe-deletion trash system for Agent Harnesses",
+  "license": "MIT",
   "type": "module",
   "engines": {
     "node": ">=18.0.0"
   },
   "bin": {
-    "sibyl": "./dist/sibyl.mjs"
+    "sibyl": "./skills/sibyl/scripts/sibyl.mjs"
   },
+  "files": [
+    "skills/sibyl",
+    "README.md",
+    "README.zh-CN.md",
+    "LICENSE"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/HIUEETR/Sibyl.git"
+  },
+  "keywords": [
+    "ai-agent",
+    "agent-skills",
+    "agent-harness",
+    "hooks",
+    "mcp",
+    "safe-delete",
+    "trash"
+  ],
   "scripts": {
     "build": "node scripts/build.mjs",
     "typecheck": "tsc --noEmit",

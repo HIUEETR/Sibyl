@@ -15,7 +15,7 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 var DEFAULT_CONFIG = {
-  trashMode: "workspace-first",
+  trashMode: "workspace",
   workspaceTrashDirName: ".sibyl-trash",
   maxBytes: 1024 * 1024 * 1024,
   // 1 GiB
@@ -27,7 +27,7 @@ var DEFAULT_CONFIG = {
   gitDestructivePolicy: "deny",
   selfProtectPolicy: "deny"
 };
-var TRASH_MODES = /* @__PURE__ */ new Set(["workspace-first", "global", "custom"]);
+var TRASH_MODES = /* @__PURE__ */ new Set(["workspace", "workspace-first", "global", "custom"]);
 var PURGE_POLICIES = /* @__PURE__ */ new Set(["autonomous", "ask", "deny"]);
 var GIT_POLICIES = /* @__PURE__ */ new Set(["deny", "ask", "allow"]);
 var SELF_PROTECT_POLICIES = /* @__PURE__ */ new Set(["deny", "ask"]);
@@ -84,7 +84,7 @@ function mergeConfigLayer(base, layer) {
   }
   const next = { ...base, allowDirectDeletePatterns: [...base.allowDirectDeletePatterns] };
   if (typeof layer.trashMode === "string" && TRASH_MODES.has(layer.trashMode)) {
-    next.trashMode = layer.trashMode;
+    next.trashMode = layer.trashMode === "workspace-first" ? "workspace" : layer.trashMode;
   }
   if (typeof layer.customTrashDir === "string" && layer.customTrashDir.trim().length > 0) {
     next.customTrashDir = layer.customTrashDir.trim();
@@ -202,17 +202,14 @@ function getWorkspaceTrashRoot(workspaceRoot, config) {
   return path2.join(path2.resolve(workspaceRoot), config.workspaceTrashDirName);
 }
 __name(getWorkspaceTrashRoot, "getWorkspaceTrashRoot");
-function resolveTrashRoot(targetPath, workspaceRoot, config) {
+function resolveTrashRoot(_targetPath, workspaceRoot, config) {
   if (config.trashMode === "global") {
     return getGlobalTrashRoot();
   }
   if (config.trashMode === "custom" && config.customTrashDir) {
     return path2.resolve(expandHome(config.customTrashDir));
   }
-  if (isPathInside(targetPath, workspaceRoot)) {
-    return getWorkspaceTrashRoot(workspaceRoot, config);
-  }
-  return getGlobalTrashRoot();
+  return getWorkspaceTrashRoot(workspaceRoot, config);
 }
 __name(resolveTrashRoot, "resolveTrashRoot");
 function getCandidateTrashRoots(workspaceRoot, config) {
@@ -225,7 +222,7 @@ function getCandidateTrashRoots(workspaceRoot, config) {
       roots.push(path2.resolve(p));
     }
   }, "add");
-  if (config.trashMode === "workspace-first") {
+  if (config.trashMode === "workspace") {
     add(getWorkspaceTrashRoot(workspaceRoot, config));
     add(getGlobalTrashRoot());
   } else if (config.trashMode === "custom" && config.customTrashDir) {
