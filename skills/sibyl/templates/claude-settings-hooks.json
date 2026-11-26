@@ -1,0 +1,27 @@
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \".claude/skills/sibyl/scripts/sibyl.mjs\" hook --harness claude",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Bash|Write|Edit|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \".claude/skills/sibyl/scripts/sibyl.mjs\" hook --harness claude",
+            "timeout": 10
+          }
+        ]
+      }
+    ]
+  }
+}

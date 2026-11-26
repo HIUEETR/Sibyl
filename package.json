@@ -1,0 +1,23 @@
+{
+  "name": "sibyl",
+  "version": "0.1.0",
+  "description": "Universal Skill + Hook + single-file CLI/MCP safe-deletion trash system for Agent Harnesses",
+  "type": "module",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "bin": {
+    "sibyl": "./dist/sibyl.mjs"
+  },
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.0",
+    "esbuild": "^0.24.2",
+    "typescript": "^5.7.2",
+    "vitest": "^2.1.8"
+  }
+}

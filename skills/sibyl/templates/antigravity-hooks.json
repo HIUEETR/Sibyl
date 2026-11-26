@@ -1,0 +1,24 @@
+{
+  "sibyl-guard": {
+    "enabled": true,
+    "SessionStart": [
+      {
+        "type": "command",
+        "command": "node \".agents/skills/sibyl/scripts/sibyl.mjs\" hook --harness antigravity",
+        "timeout": 10
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "run_command|write_file|edit_file",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \".agents/skills/sibyl/scripts/sibyl.mjs\" hook --harness antigravity",
+            "timeout": 10
+          }
+        ]
+      }
+    ]
+  }
+}
